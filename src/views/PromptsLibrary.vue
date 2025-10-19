@@ -1524,6 +1524,34 @@ const savePrompts = () => {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .header-actions .el-button {
+    width: auto;
+  }
+
+  .filter-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;

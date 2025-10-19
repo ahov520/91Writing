@@ -21,7 +21,7 @@
     <!-- 统计概览 -->
     <div class="stats-section">
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
           <el-card class="stat-card" shadow="hover">
             <div class="stat-item">
               <div class="stat-icon novels">
@@ -35,7 +35,7 @@
           </el-card>
         </el-col>
         
-        <el-col :span="6">
+        <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
           <el-card class="stat-card" shadow="hover">
             <div class="stat-item">
               <div class="stat-icon words">
@@ -49,7 +49,7 @@
           </el-card>
         </el-col>
         
-        <el-col :span="6">
+        <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
           <el-card class="stat-card" shadow="hover">
             <div class="stat-item">
               <div class="stat-icon chapters">
@@ -63,7 +63,7 @@
           </el-card>
         </el-col>
         
-        <el-col :span="6">
+        <el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
           <el-card class="stat-card" shadow="hover">
             <div class="stat-item">
               <div class="stat-icon tokens">
@@ -82,7 +82,7 @@
     <!-- 主要内容区域 -->
     <el-row :gutter="20" class="main-content">
       <!-- 左侧：写作目标 -->
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
         <el-card class="goals-card" shadow="hover">
           <template #header>
             <div class="card-header">
@@ -140,7 +140,7 @@
       </el-col>
       
       <!-- 右侧：快速操作 -->
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
         <el-card class="quick-actions-card" shadow="hover">
           <template #header>
             <span>🚀 快速操作</span>
@@ -804,6 +804,36 @@ onMounted(() => {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+  .welcome-card :deep(.el-card__body) {
+    padding: 32px;
+  }
+
+  .welcome-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .welcome-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .stats-section .el-col {
+    margin-bottom: 16px;
+  }
+
+  .goals-card,
+  .quick-actions-card {
+    min-height: auto;
+  }
+
+  .novels-list {
+    gap: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .welcome-content {
     flex-direction: column;
@@ -816,6 +846,12 @@ onMounted(() => {
     min-height: auto;
   }
   
+  .welcome-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
   .action-grid {
     grid-template-columns: 1fr;
   }
@@ -827,6 +863,43 @@ onMounted(() => {
   
   .goals-content {
     min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .welcome-card :deep(.el-card__body) {
+    padding: 24px;
+  }
+
+  .welcome-text h1 {
+    font-size: 24px;
+  }
+
+  .welcome-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .welcome-actions .el-button {
+    width: 100%;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .novel-meta {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .novel-actions {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
