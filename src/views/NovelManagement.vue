@@ -2000,6 +2000,32 @@ onMounted(() => {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+  .page-header {
+    padding: 16px;
+  }
+
+  .filter-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .filter-left,
+  .filter-right {
+    width: 100%;
+  }
+
+  .filter-right .el-input,
+  .filter-left .el-select {
+    width: 100%;
+  }
+
+  .novels-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;

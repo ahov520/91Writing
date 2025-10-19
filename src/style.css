@@ -84,3 +84,80 @@ html, body {
 .ml-2 {
   margin-left: 8px;
 }
+
+/* 响应式布局辅助 */
+@media (max-width: 1024px) {
+  .page-header,
+  .card-header,
+  .filter-content,
+  .selector-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .header-actions .el-button,
+  .filter-content .el-select,
+  .filter-content .el-input,
+  .filter-content .el-button,
+  .selector-content .el-select,
+  .selector-content .el-input {
+    width: 100%;
+  }
+
+  .filter-content,
+  .selector-content {
+    gap: 10px;
+  }
+
+  .page-header .header-actions {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    background-color: var(--background-light);
+  }
+
+  .el-dialog {
+    width: 94% !important;
+    margin: 0 auto;
+  }
+
+  .header-actions .el-button {
+    width: 100%;
+  }
+
+  .filter-content,
+  .selector-content {
+    align-items: stretch !important;
+  }
+
+  .filter-content > *,
+  .selector-content > * {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .el-col {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  .page-header,
+  .card-header {
+    text-align: center;
+  }
+
+  .header-actions {
+    justify-content: center;
+  }
+}

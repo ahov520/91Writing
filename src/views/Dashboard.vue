@@ -1,11 +1,15 @@
 <template>
-  <div class="dashboard-container">
-    <!-- 侧边栏 -->
-    <div class="sidebar" :class="{ 'collapsed': isCollapse }">
+  <div class="dashboard-container" :class="{ 'is-mobile': isMobile }">
+    <!-- 桌面端侧边栏 -->
+    <div
+      v-if="!isMobile"
+      class="sidebar"
+      :class="{ collapsed: isCollapse }"
+    >
       <div class="logo">
         <h2>📚 91写作</h2>
       </div>
-      
+
       <el-menu
         :default-active="activeMenu"
         class="sidebar-menu"
@@ -13,89 +17,44 @@
         :collapse="isCollapse"
         :collapse-transition="false"
       >
-        <el-menu-item index="/">
-          <el-icon><House /></el-icon>
-          <template #title>首页</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/novels">
-          <el-icon><Document /></el-icon>
-          <template #title>小说列表</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/prompts">
-          <el-icon><ChatLineSquare /></el-icon>
-          <template #title>提示词库</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/genres">
-          <el-icon><Collection /></el-icon>
-          <template #title>小说类型管理</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/chapters">
-          <el-icon><Notebook /></el-icon>
-          <template #title>章节管理</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/goals">
-          <el-icon><Aim /></el-icon>
-          <template #title>写作目标</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/billing">
-          <el-icon><CreditCard /></el-icon>
-          <template #title>Token计费</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/tools">
-          <el-icon><Tools /></el-icon>
-          <template #title>工具库</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/short-story">
-          <el-icon><EditPen /></el-icon>
-          <template #title>短文写作</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/book-analysis">
-          <el-icon><DataAnalysis /></el-icon>
-          <template #title>拆书工具</template>
-        </el-menu-item>
-        
-        <el-menu-item index="/settings">
-          <el-icon><Setting /></el-icon>
-          <template #title>系统设置</template>
+        <el-menu-item
+          v-for="item in navigationMenuItems"
+          :key="item.path"
+          :index="item.path"
+        >
+          <el-icon><component :is="item.icon" /></el-icon>
+          <template #title>{{ item.label }}</template>
         </el-menu-item>
       </el-menu>
     </div>
-    
-    <!-- 主要内容区域 -->
+
+    <!-- 主体内容 -->
     <div class="main-container">
-      <!-- 顶部导航栏 -->
       <div class="header">
         <div class="header-left">
-          <el-button 
-            type="text" 
+          <el-button
+            type="text"
             @click="toggleSidebar"
             class="collapse-btn"
           >
-            <el-icon><Expand v-if="isCollapse" /><Fold v-else /></el-icon>
+            <el-icon>
+              <Menu v-if="isMobile" />
+              <Expand v-else-if="isCollapse" />
+              <Fold v-else />
+            </el-icon>
           </el-button>
           <span class="page-title">{{ pageTitle }}</span>
         </div>
-        
-        <div class="header-right">
-          <!-- 模型选择 -->
+
+        <div class="header-right" v-if="!isMobile">
           <div class="model-selector" v-if="isApiConfigured">
-            <el-select 
+            <el-select
               v-model="currentModel"
               @change="handleModelChange"
               size="small"
-              style="width: 220px"
               placeholder="选择模型"
+              class="model-select"
             >
-              <!-- 官方模型组 -->
               <el-option-group label="🏢 91写作官方模型">
                 <el-option
                   v-for="model in officialModels"
@@ -109,8 +68,7 @@
                   </span>
                 </el-option>
               </el-option-group>
-              
-              <!-- 自定义模型组 -->
+
               <el-option-group label="⚙️ 自定义模型" v-if="customModels.length > 0">
                 <el-option
                   v-for="model in customModels"
@@ -119,7 +77,10 @@
                   :value="model.id"
                 >
                   <span>{{ model.name }}</span>
-                  <span v-if="model.description" style="float: right; color: #8492a6; font-size: 12px">
+                  <span
+                    v-if="model.description"
+                    style="float: right; color: #8492a6; font-size: 12px"
+                  >
                     {{ model.description }}
                   </span>
                 </el-option>
@@ -127,9 +88,8 @@
             </el-select>
           </div>
 
-          <!-- 公告及教程 -->
-          <el-button 
-            @click="openAnnouncement" 
+          <el-button
+            @click="openAnnouncement"
             type="primary"
             size="small"
           >
@@ -137,9 +97,8 @@
             公告及教程
           </el-button>
 
-          <!-- API配置状态 -->
-          <el-button 
-            @click="showApiConfig = true" 
+          <el-button
+            @click="openApiConfigDialog()"
             :type="isApiConfigured ? 'success' : 'warning'"
             size="small"
           >
@@ -147,25 +106,138 @@
             {{ isApiConfigured ? 'API已配置' : 'API配置' }}
           </el-button>
         </div>
+
+        <div class="header-right mobile" v-else>
+          <el-button type="text" class="icon-btn" @click="openAnnouncement">
+            <el-icon><Bell /></el-icon>
+          </el-button>
+          <el-button
+            type="text"
+            class="icon-btn"
+            @click="mobileActionsVisible = true"
+          >
+            <el-icon><MoreFilled /></el-icon>
+          </el-button>
+        </div>
       </div>
-      
-      <!-- 页面内容 -->
-      <div class="content">
+
+      <div class="content" :class="{ 'content-mobile': isMobile }">
         <router-view />
       </div>
     </div>
-    
-    <!-- API配置对话框 -->
-    <el-dialog v-model="showApiConfig" title="API配置" width="1000px">
+
+    <el-dialog
+      v-model="showApiConfig"
+      title="API配置"
+      width="1000px"
+      :fullscreen="isMobile"
+    >
       <ApiConfig @close="showApiConfig = false" />
     </el-dialog>
 
-    <!-- 公告对话框 -->
     <AnnouncementDialog
       v-model:visible="showAnnouncement"
       :announcement="currentAnnouncement"
       @close="handleAnnouncementClose"
     />
+
+    <el-drawer
+      v-model="mobileMenuVisible"
+      title="导航菜单"
+      direction="ltr"
+      size="70%"
+      class="mobile-nav-drawer"
+    >
+      <el-menu
+        :default-active="activeMenu"
+        class="sidebar-menu mobile-menu"
+        @select="handleMenuSelect"
+      >
+        <el-menu-item
+          v-for="item in navigationMenuItems"
+          :key="item.path"
+          :index="item.path"
+        >
+          <el-icon><component :is="item.icon" /></el-icon>
+          <template #title>{{ item.label }}</template>
+        </el-menu-item>
+      </el-menu>
+    </el-drawer>
+
+    <el-drawer
+      v-model="mobileActionsVisible"
+      direction="btt"
+      size="auto"
+      class="mobile-action-drawer"
+      :with-header="false"
+    >
+      <div class="mobile-actions">
+        <div class="mobile-drawer-handle" @click="mobileActionsVisible = false">
+          <span></span>
+        </div>
+
+        <h3 class="mobile-section-title">快速操作</h3>
+
+        <div v-if="isApiConfigured" class="mobile-model-selector">
+          <label class="selector-label">快速切换模型</label>
+          <el-select
+            v-model="currentModel"
+            @change="handleModelChange"
+            placeholder="选择模型"
+            size="large"
+            class="model-select"
+          >
+            <el-option-group label="🏢 91写作官方模型">
+              <el-option
+                v-for="model in officialModels"
+                :key="model.id"
+                :label="model.name"
+                :value="model.id"
+              >
+                <span>{{ model.name }}</span>
+                <span style="float: right; color: #8492a6; font-size: 12px">
+                  {{ model.price }}
+                </span>
+              </el-option>
+            </el-option-group>
+            <el-option-group label="⚙️ 自定义模型" v-if="customModels.length > 0">
+              <el-option
+                v-for="model in customModels"
+                :key="model.id"
+                :label="model.name"
+                :value="model.id"
+              >
+                <span>{{ model.name }}</span>
+                <span
+                  v-if="model.description"
+                  style="float: right; color: #8492a6; font-size: 12px"
+                >
+                  {{ model.description }}
+                </span>
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </div>
+
+        <el-button
+          type="primary"
+          class="mobile-action-button"
+          @click="openAnnouncement"
+        >
+          <el-icon><Bell /></el-icon>
+          公告及教程
+        </el-button>
+
+        <el-button
+          class="mobile-action-button"
+          :type="isApiConfigured ? 'success' : 'warning'"
+          @click="openApiConfigDialog(true)"
+        >
+          <el-icon><Key /></el-icon>
+          {{ isApiConfigured ? '管理API配置' : '去配置API' }}
+        </el-button>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -173,10 +245,10 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useNovelStore } from '@/stores/novel'
-import { 
-  House, Document, ChatLineSquare, Collection, Notebook, Aim, 
+import {
+  House, Document, ChatLineSquare, Collection, Notebook, Aim,
   CreditCard, Setting, Key, Tools, EditPen, DataAnalysis,
-  Expand, Fold, Bell 
+  Expand, Fold, Bell, Menu, MoreFilled
 } from '@element-plus/icons-vue'
 import ApiConfig from '@/components/ApiConfig.vue'
 import AnnouncementDialog from '@/components/AnnouncementDialog.vue'
@@ -187,22 +259,46 @@ const router = useRouter()
 const route = useRoute()
 const novelStore = useNovelStore()
 
+const navigationItems = [
+  { path: '/', label: '首页', icon: House },
+  { path: '/novels', label: '小说列表', icon: Document },
+  { path: '/prompts', label: '提示词库', icon: ChatLineSquare },
+  { path: '/genres', label: '小说类型管理', icon: Collection },
+  { path: '/chapters', label: '章节管理', icon: Notebook },
+  { path: '/goals', label: '写作目标', icon: Aim },
+  { path: '/billing', label: 'Token计费', icon: CreditCard },
+  { path: '/tools', label: '工具库', icon: Tools },
+  { path: '/short-story', label: '短文写作', icon: EditPen },
+  { path: '/book-analysis', label: '拆书工具', icon: DataAnalysis },
+  { path: '/settings', label: '系统设置', icon: Setting },
+  { path: '/writer', label: '写作工坊', icon: EditPen, showInMenu: false }
+]
+
+const navigationMenuItems = computed(() => navigationItems.filter(item => item.showInMenu !== false))
+
 // 响应式数据
 const isCollapse = ref(false)
+const isMobile = ref(false)
+const mobileMenuVisible = ref(false)
+const mobileActionsVisible = ref(false)
 const showApiConfig = ref(false)
 const showAnnouncement = ref(false)
 const currentAnnouncement = ref({})
 const activeMenu = ref('/')
 const currentModel = ref('')
 const configType = ref('official')
-const forceUpdate = ref(0) // 用于强制更新计算属性
+const forceUpdate = ref(0)
 
 // 计算属性
 const isApiConfigured = computed(() => novelStore.isApiConfigured)
 
-// 获取当前API配置
 const currentApiConfig = computed(() => {
   return novelStore.getCurrentApiConfig()
+})
+
+const pageTitle = computed(() => {
+  const match = navigationItems.find(item => item.path === route.path)
+  return match ? match.label : '首页'
 })
 
 // 官方模型列表（固定）
@@ -235,20 +331,17 @@ const officialModels = computed(() => [
 
 // 自定义模型列表（从API配置中读取）
 const customModels = computed(() => {
-  // 依赖于 forceUpdate 来强制重新计算
   forceUpdate.value
-  
+
   const models = []
-  
+
   try {
-    // 从ApiConfig组件的配置中读取自定义模型
     const savedCustomModels = localStorage.getItem('customModels')
     if (savedCustomModels) {
       const parsed = JSON.parse(savedCustomModels)
       models.push(...parsed)
     }
-    
-    // 添加一些默认的自定义模型选项
+
     const defaultCustomModels = [
       {
         id: 'deepseek-reasoner',
@@ -276,76 +369,43 @@ const customModels = computed(() => {
         description: 'OpenAI经典对话模型'
       }
     ]
-    
-    // 合并默认模型和自定义模型，去重
+
     const allModels = [...defaultCustomModels]
     for (const model of models) {
       if (!allModels.find(m => m.id === model.id)) {
         allModels.push(model)
       }
     }
-    
-    console.log('自定义模型列表:', allModels) // 调试日志
+
+    console.log('自定义模型列表:', allModels)
     return allModels
-    
   } catch (error) {
     console.error('读取自定义模型失败:', error)
     return []
   }
 })
 
-const pageTitle = computed(() => {
-  const titleMap = {
-    '/': '首页',
-    '/novels': '小说列表',
-    '/prompts': '提示词库',
-    '/genres': '小说类型管理',
-    '/chapters': '章节管理',
-    '/goals': '写作目标',
-    '/billing': 'Token计费',
-    '/tools': '工具库',
-    '/short-story': '短文写作',
-    '/book-analysis': '拆书工具',
-    '/settings': '系统设置'
-  }
-  return titleMap[route.path] || '首页'
-})
-
-// 获取当前配置类型的函数
-const getCurrentConfigType = () => {
-  try {
-    // 从localStorage获取配置类型
-    const savedConfigType = localStorage.getItem('apiConfigType')
-    console.log('从localStorage获取的配置类型:', savedConfigType) // 调试日志
-    
-    // 如果没有保存的配置类型，尝试通过API地址判断
-    if (!savedConfigType && isApiConfigured.value && currentApiConfig.value) {
-      const baseURL = currentApiConfig.value.baseURL
-      console.log('API地址:', baseURL) // 调试日志
-      
-      if (baseURL && baseURL.includes('91hub.vip')) {
-        console.log('通过API地址判断为官方配置') // 调试日志
-        return 'official'
-      } else {
-        console.log('通过API地址判断为自定义配置') // 调试日志
-        return 'custom'
-      }
-    }
-    
-    return savedConfigType || 'official'
-  } catch (error) {
-    console.error('获取配置类型失败:', error)
-    return 'official'
-  }
-}
-
 // 方法
 const toggleSidebar = () => {
-  isCollapse.value = !isCollapse.value
+  if (isMobile.value) {
+    mobileMenuVisible.value = true
+  } else {
+    isCollapse.value = !isCollapse.value
+  }
 }
 
 const handleMenuSelect = (index) => {
   router.push(index)
+  if (isMobile.value) {
+    mobileMenuVisible.value = false
+  }
+}
+
+const openApiConfigDialog = (fromMobile = false) => {
+  showApiConfig.value = true
+  if (fromMobile) {
+    mobileActionsVisible.value = false
+  }
 }
 
 // 公告相关功能
@@ -353,6 +413,9 @@ const openAnnouncement = () => {
   try {
     currentAnnouncement.value = getLatestAnnouncement()
     showAnnouncement.value = true
+    if (isMobile.value) {
+      mobileActionsVisible.value = false
+    }
   } catch (error) {
     console.error('获取公告错误:', error)
   }
@@ -365,101 +428,83 @@ const handleAnnouncementClose = () => {
 // 模型相关功能
 const handleModelChange = (modelId) => {
   try {
-    console.log('切换模型:', modelId) // 调试日志
-    
-    // 判断选择的是官方模型还是自定义模型
+    console.log('切换模型:', modelId)
+
     const isOfficialModel = officialModels.value.find(m => m.id === modelId)
     const isCustomModel = customModels.value.find(m => m.id === modelId)
-    
+
     let newConfig = {}
     let newConfigType = ''
-    
+
     if (isOfficialModel) {
-      console.log('选择了官方模型，切换到官方配置') // 调试日志
-      // 选择了官方模型，切换到官方配置
+      console.log('选择了官方模型，切换到官方配置')
       newConfigType = 'official'
-      
-      // 加载官方配置的基础参数
+
       const savedOfficialConfig = localStorage.getItem('officialApiConfig')
       if (savedOfficialConfig) {
         newConfig = JSON.parse(savedOfficialConfig)
       } else {
-        // 如果没有保存的官方配置，使用默认值
         newConfig = {
           baseURL: 'https://ai.91hub.vip/v1',
           maxTokens: 2000000,
           unlimitedTokens: false,
           temperature: 0.7,
-          apiKey: '' // 需要用户配置
+          apiKey: ''
         }
       }
       newConfig.selectedModel = modelId
-      
-      // 保存配置类型
+
       localStorage.setItem('apiConfigType', 'official')
-      // 保存官方配置
       localStorage.setItem('officialApiConfig', JSON.stringify(newConfig))
-      
     } else if (isCustomModel) {
-      console.log('选择了自定义模型，切换到自定义配置') // 调试日志
-      // 选择了自定义模型，切换到自定义配置
+      console.log('选择了自定义模型，切换到自定义配置')
       newConfigType = 'custom'
-      
-      // 加载自定义配置的基础参数
+
       const savedCustomConfig = localStorage.getItem('customApiConfig')
       if (savedCustomConfig) {
         newConfig = JSON.parse(savedCustomConfig)
       } else {
-        // 如果没有保存的自定义配置，使用默认值
         newConfig = {
           baseURL: 'https://api.openai.com/v1',
           maxTokens: 2000000,
           unlimitedTokens: false,
           temperature: 0.7,
-          apiKey: '' // 需要用户配置
+          apiKey: ''
         }
       }
       newConfig.selectedModel = modelId
-      
-      // 保存配置类型
+
       localStorage.setItem('apiConfigType', 'custom')
-      // 保存自定义配置
       localStorage.setItem('customApiConfig', JSON.stringify(newConfig))
-      
     } else {
       console.error('未知的模型类型:', modelId)
       ElMessage.error('未知的模型类型')
       return
     }
-    
-    // 更新当前配置类型
+
     configType.value = newConfigType
-    
-    // 更新store中的API配置，使用新的分离配置系统
     novelStore.updateApiConfig(newConfig, newConfigType)
     novelStore.switchConfigType(newConfigType)
-    
-    // 强制更新界面
     forceUpdate.value++
-    
+
     const modelName = getModelDisplayName(modelId)
     const configTypeName = newConfigType === 'official' ? '官方配置' : '自定义配置'
-    
-    // 检查是否需要配置API密钥
     const needsApiKey = !newConfig.apiKey || newConfig.apiKey.trim() === ''
-    
+
     if (needsApiKey) {
       ElMessage.warning(`已切换到${configTypeName}: ${modelName}，请先配置API密钥`)
-      // 可以考虑自动打开API配置对话框
       setTimeout(() => {
         showApiConfig.value = true
       }, 1000)
     } else {
       ElMessage.success(`已切换到${configTypeName}: ${modelName}`)
     }
-    
-    console.log('配置切换完成:', { configType: newConfigType, config: newConfig, needsApiKey }) // 调试日志
-    
+
+    if (isMobile.value) {
+      mobileActionsVisible.value = false
+    }
+
+    console.log('配置切换完成:', { configType: newConfigType, config: newConfig, needsApiKey })
   } catch (error) {
     console.error('切换模型失败:', error)
     ElMessage.error('切换模型失败: ' + error.message)
@@ -467,42 +512,50 @@ const handleModelChange = (modelId) => {
 }
 
 const getModelDisplayName = (modelId) => {
-  // 先在官方模型中查找
   let model = officialModels.value.find(m => m.id === modelId)
   if (model) return model.name
-  
-  // 再在自定义模型中查找
+
   model = customModels.value.find(m => m.id === modelId)
   if (model) return model.name
-  
-  // 都找不到就返回原ID
+
   return modelId
 }
 
-// 初始化模型选择器
 const initializeModelSelector = () => {
   try {
-    // 获取配置类型
     const savedConfigType = localStorage.getItem('apiConfigType') || 'official'
     configType.value = savedConfigType
-    
-    // 获取当前选中的模型
+
     if (isApiConfigured.value && currentApiConfig.value) {
       currentModel.value = currentApiConfig.value.selectedModel || ''
     }
-    
-    // 强制更新模型列表
+
     forceUpdate.value++
-    
-    console.log('模型选择器初始化完成, 配置类型:', savedConfigType, '当前模型:', currentModel.value) // 调试日志
+
+    console.log('模型选择器初始化完成, 配置类型:', savedConfigType, '当前模型:', currentModel.value)
   } catch (error) {
     console.error('初始化模型选择器失败:', error)
   }
 }
 
+const handleResize = () => {
+  isMobile.value = window.innerWidth <= 1024
+  if (isMobile.value) {
+    isCollapse.value = false
+  } else {
+    mobileMenuVisible.value = false
+    mobileActionsVisible.value = false
+  }
+}
+
 // 监听路由变化
 watch(() => route.path, (newPath) => {
-  activeMenu.value = newPath
+  const match = navigationMenuItems.value.find(item => item.path === newPath)
+  activeMenu.value = match ? newPath : '/'
+  if (isMobile.value) {
+    mobileMenuVisible.value = false
+    mobileActionsVisible.value = false
+  }
 }, { immediate: true })
 
 // 监听API配置变化，更新模型选择器
@@ -510,24 +563,23 @@ watch(() => [isApiConfigured.value, currentApiConfig.value], () => {
   initializeModelSelector()
 }, { immediate: true })
 
-// 监听localStorage变化的函数
+// 监听localStorage变化
 const handleStorageChange = (event) => {
   if (event.key === 'apiConfigType' || event.key === 'officialApiConfig' || event.key === 'customApiConfig' || event.key === 'customModels') {
-    console.log('检测到localStorage配置变化:', event.key, event.newValue) // 调试日志
-    // 延迟执行，确保数据已更新
+    console.log('检测到localStorage配置变化:', event.key, event.newValue)
     setTimeout(() => {
       initializeModelSelector()
     }, 100)
   }
 }
 
-// 组件挂载时初始化
 onMounted(() => {
   initializeModelSelector()
-  // 监听localStorage变化
+  handleResize()
+
   window.addEventListener('storage', handleStorageChange)
-  
-  // 手动触发一次检查（处理同页面内的变化）
+  window.addEventListener('resize', handleResize)
+
   const checkConfigChange = () => {
     const currentType = localStorage.getItem('apiConfigType')
     if (currentType !== configType.value) {
@@ -535,23 +587,19 @@ onMounted(() => {
       initializeModelSelector()
     }
   }
-  
-  // 定期检查配置变化（处理同页面内的localStorage变化）
+
   const intervalId = setInterval(checkConfigChange, 1000)
-  
-  // 保存interval ID以便清理
   window.modelSelectorInterval = intervalId
 })
 
-// 组件卸载时清理
 onUnmounted(() => {
   window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('resize', handleResize)
   if (window.modelSelectorInterval) {
     clearInterval(window.modelSelectorInterval)
     delete window.modelSelectorInterval
   }
 })
-
 </script>
 
 <style scoped>
@@ -559,6 +607,10 @@ onUnmounted(() => {
   display: flex;
   height: 100vh;
   background-color: #f5f5f5;
+}
+
+.dashboard-container.is-mobile {
+  flex-direction: column;
 }
 
 .sidebar {
@@ -622,6 +674,7 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -633,17 +686,21 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .header-left {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .collapse-btn {
-  margin-right: 15px;
   font-size: 18px;
+  padding: 6px;
 }
 
 .page-title {
@@ -658,20 +715,29 @@ onUnmounted(() => {
   gap: 15px;
 }
 
+.header-right.mobile {
+  gap: 8px;
+}
+
+.icon-btn {
+  min-width: auto;
+  padding: 6px;
+  border: none;
+}
+
+.icon-btn :deep(.el-icon) {
+  font-size: 20px;
+}
+
 .model-selector {
   display: flex;
   align-items: center;
 }
 
-.model-selector .el-select {
-  min-width: 200px;
+.model-select {
+  min-width: 210px;
 }
 
-.model-selector .el-select .el-input__inner {
-  font-size: 13px;
-}
-
-/* 模型分组样式 */
 .model-selector :deep(.el-select-group__title) {
   font-weight: 600;
   color: #409eff;
@@ -688,46 +754,125 @@ onUnmounted(() => {
   border-bottom: 1px solid #e4e7ed;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.user-info:hover {
-  background-color: #f5f7fa;
-}
-
-.username {
-  color: #606266;
-  font-size: 14px;
-}
-
 .content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
   background-color: #f5f5f5;
+  transition: padding 0.3s;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    z-index: 1000;
-    height: 100vh;
+.content-mobile {
+  padding: 16px 14px 80px;
+}
+
+.mobile-nav-drawer :deep(.el-drawer__body) {
+  padding: 0;
+}
+
+.mobile-nav-drawer .mobile-menu {
+  height: 100%;
+}
+
+.mobile-action-drawer {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.mobile-action-drawer :deep(.el-drawer__body) {
+  padding: 16px 20px 24px;
+  background-color: #f7f8fa;
+}
+
+.mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-drawer-handle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-drawer-handle span {
+  display: inline-block;
+  width: 36px;
+  height: 4px;
+  background-color: #dcdfe6;
+  border-radius: 2px;
+}
+
+.mobile-section-title {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.mobile-model-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selector-label {
+  font-size: 13px;
+  color: #606266;
+}
+
+.mobile-action-button {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 1280px) {
+  .model-select {
+    min-width: 180px;
   }
-  
-  .main-container {
-    margin-left: 0;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 16px;
   }
-  
+
+  .page-title {
+    font-size: 16px;
+  }
+
   .content {
-    padding: 15px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .collapse-btn {
+    padding: 4px;
+  }
+
+  .page-title {
+    font-size: 15px;
+  }
+
+  .content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 14px;
   }
 }
 </style>

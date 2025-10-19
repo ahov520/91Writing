@@ -802,6 +802,29 @@ onMounted(() => {
 }
 
 /* 响应式设计 */
+@media (max-width: 1024px) {
+  .page-header {
+    padding: 16px;
+  }
+
+  .selector-content {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .selector-left,
+  .selector-right {
+    width: 100%;
+  }
+
+  .selector-left .el-select,
+  .selector-right .novel-stats,
+  .selector-right .stat-item {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .page-header {
     flex-direction: column;
