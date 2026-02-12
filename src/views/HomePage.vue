@@ -224,14 +224,19 @@
     </div>
 
     <!-- 写作目标管理对话框 -->
-    <el-dialog v-model="showGoalsDialog" title="写作目标管理" width="800px">
+    <el-dialog
+      v-model="showGoalsDialog"
+      title="写作目标管理"
+      :width="isMobile ? '94%' : '800px'"
+      :fullscreen="isSmallScreen"
+    >
       <WritingGoals @close="showGoalsDialog = false" />
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNovelStore } from '@/stores/novel'
 import { 
@@ -246,6 +251,8 @@ const novelStore = useNovelStore()
 
 // 响应式数据
 const showGoalsDialog = ref(false)
+const isMobile = ref(false)
+const isSmallScreen = ref(false)
 const stats = computed(() => {
   // 从本地存储获取真实的小说数据
   const novelsData = JSON.parse(localStorage.getItem('novels') || '[]')
@@ -425,11 +432,18 @@ const refreshData = () => {
   console.log('首页刷新目标数据')
 }
 
+const updateScreenState = () => {
+  isMobile.value = window.innerWidth <= 768
+  isSmallScreen.value = window.innerWidth <= 480
+}
+
 // 暴露刷新函数给全局，以便其他页面调用
 window.refreshHomeData = refreshData
 
 // 生命周期
 onMounted(() => {
+  updateScreenState()
+
   // 监听localStorage变化，以便实时更新目标数据
   window.addEventListener('storage', (e) => {
     if (e.key === 'writingGoals') {
@@ -443,12 +457,19 @@ onMounted(() => {
       refreshData()
     }
   })
+
+  window.addEventListener('resize', updateScreenState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateScreenState)
 })
 </script>
 
 <style scoped>
 .home-page {
   padding: 0;
+  max-width: 100%;
 }
 
 .welcome-section {
@@ -610,7 +631,8 @@ onMounted(() => {
 .goal-info {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
@@ -790,9 +812,14 @@ onMounted(() => {
 
 .novel-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
   font-size: 12px;
   color: #909399;
+}
+
+.novel-actions .el-button {
+  padding: 0;
 }
 
 .novel-actions {
@@ -855,14 +882,53 @@ onMounted(() => {
   .action-grid {
     grid-template-columns: 1fr;
   }
+
+  .action-item {
+    min-height: 76px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+  }
+
+  .action-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .action-item span {
+    font-size: 14px;
+    font-weight: 500;
+  }
   
   .novel-item {
     flex-direction: column;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px;
+  }
+
+  .novel-cover {
+    width: 54px;
+    height: 72px;
   }
   
   .goals-content {
     min-height: auto;
+  }
+
+  .novel-actions {
+    width: 100%;
+  }
+
+  .novel-actions .el-button {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 0;
+    border: 1px solid #e4e7ed;
+    border-radius: 8px;
   }
 }
 
@@ -885,21 +951,37 @@ onMounted(() => {
   }
 
   .stat-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .stat-number {
+    font-size: 20px;
+  }
+
+  .goal-item {
+    padding: 12px;
   }
 
   .novel-meta {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
   }
 
-  .novel-actions {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  .goal-info {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .progress-text {
+    text-align: left;
+    line-height: 1.4;
   }
 }
 </style>
