@@ -43,7 +43,7 @@
               <Fold v-else />
             </el-icon>
           </el-button>
-          <span class="page-title">{{ pageTitle }}</span>
+          <span class="page-title" :title="pageTitle">{{ pageTitle }}</span>
         </div>
 
         <div class="header-right" v-if="!isMobile">
@@ -145,7 +145,7 @@
       v-model="mobileMenuVisible"
       title="导航菜单"
       direction="ltr"
-      size="70%"
+      :size="isSmallMobile ? '84%' : '70%'"
       class="mobile-nav-drawer"
     >
       <el-menu
@@ -248,7 +248,7 @@ import { useNovelStore } from '@/stores/novel'
 import {
   House, Document, ChatLineSquare, Collection, Notebook, Aim,
   CreditCard, Setting, Key, Tools, EditPen, DataAnalysis,
-  Expand, Fold, Bell, Menu, MoreFilled
+  Expand, Fold, Bell, Menu, MoreFilled, DataBoard
 } from '@element-plus/icons-vue'
 import ApiConfig from '@/components/ApiConfig.vue'
 import AnnouncementDialog from '@/components/AnnouncementDialog.vue'
@@ -270,6 +270,7 @@ const navigationItems = [
   { path: '/tools', label: '工具库', icon: Tools },
   { path: '/short-story', label: '短文写作', icon: EditPen },
   { path: '/book-analysis', label: '拆书工具', icon: DataAnalysis },
+  { path: '/studio', label: '创作中台', icon: DataBoard },
   { path: '/settings', label: '系统设置', icon: Setting },
   { path: '/writer', label: '写作工坊', icon: EditPen, showInMenu: false }
 ]
@@ -279,6 +280,7 @@ const navigationMenuItems = computed(() => navigationItems.filter(item => item.s
 // 响应式数据
 const isCollapse = ref(false)
 const isMobile = ref(false)
+const isSmallMobile = ref(false)
 const mobileMenuVisible = ref(false)
 const mobileActionsVisible = ref(false)
 const showApiConfig = ref(false)
@@ -540,6 +542,7 @@ const initializeModelSelector = () => {
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 1024
+  isSmallMobile.value = window.innerWidth <= 480
   if (isMobile.value) {
     isCollapse.value = false
   } else {
@@ -707,6 +710,10 @@ onUnmounted(() => {
   font-size: 18px;
   font-weight: 500;
   color: #303133;
+  max-width: min(50vw, 260px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header-right {
@@ -782,6 +789,8 @@ onUnmounted(() => {
 .mobile-action-drawer :deep(.el-drawer__body) {
   padding: 16px 20px 24px;
   background-color: #f7f8fa;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
 }
 
 .mobile-actions {
@@ -859,6 +868,7 @@ onUnmounted(() => {
 
   .page-title {
     font-size: 15px;
+    max-width: 52vw;
   }
 
   .content {
@@ -867,12 +877,25 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
+  .header {
+    padding: 0 10px;
+  }
+
   .page-title {
     font-size: 14px;
+    max-width: 48vw;
   }
 
   .content {
-    padding: 14px;
+    padding: 12px;
+  }
+
+  .content-mobile {
+    padding: 12px 10px 76px;
+  }
+
+  .mobile-action-drawer :deep(.el-drawer__body) {
+    padding: 14px 14px 20px;
   }
 }
 </style>
