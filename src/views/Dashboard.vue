@@ -248,7 +248,7 @@ import { useNovelStore } from '@/stores/novel'
 import {
   House, Document, ChatLineSquare, Collection, Notebook, Aim,
   CreditCard, Setting, Key, Tools, EditPen, DataAnalysis,
-  Expand, Fold, Bell, Menu, MoreFilled
+  Expand, Fold, Bell, Menu, MoreFilled, DataBoard
 } from '@element-plus/icons-vue'
 import ApiConfig from '@/components/ApiConfig.vue'
 import AnnouncementDialog from '@/components/AnnouncementDialog.vue'
@@ -270,6 +270,7 @@ const navigationItems = [
   { path: '/tools', label: '工具库', icon: Tools },
   { path: '/short-story', label: '短文写作', icon: EditPen },
   { path: '/book-analysis', label: '拆书工具', icon: DataAnalysis },
+  { path: '/studio', label: '创作中台', icon: DataBoard },
   { path: '/settings', label: '系统设置', icon: Setting },
   { path: '/writer', label: '写作工坊', icon: EditPen, showInMenu: false }
 ]
