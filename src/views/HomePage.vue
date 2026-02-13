@@ -468,22 +468,25 @@ onUnmounted(() => {
 
 <style scoped>
 .home-page {
+  --primary-1: #5a606b;
+  --primary-2: #3e4552;
+  --surface-glass: rgba(255, 255, 255, 0.96);
+  --card-border: #e5e7eb;
   padding: 0;
   max-width: 100%;
 }
 
-.welcome-section {
-  margin-bottom: 20px;
-}
+.welcome-section { margin-bottom: 20px; }
 
 .welcome-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #40454f 0%, #5a606b 45%, #2d323a 100%);
   border: none;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 36px rgba(17, 24, 39, 0.28);
 }
 
-.welcome-card :deep(.el-card__body) {
-  padding: 40px;
-}
+.welcome-card :deep(.el-card__body) { padding: 40px; }
 
 .welcome-content {
   display: flex;
@@ -492,46 +495,31 @@ onUnmounted(() => {
   color: white;
 }
 
-.welcome-text h1 {
-  margin: 0 0 10px 0;
-  font-size: 32px;
-  font-weight: 600;
-}
+.welcome-text h1 { margin: 0 0 10px 0; font-size: 32px; font-weight: 700; }
+.welcome-text p { margin: 0; font-size: 16px; opacity: 0.92; }
+.welcome-actions { display: flex; gap: 15px; }
 
-.welcome-text p {
-  margin: 0;
-  font-size: 16px;
-  opacity: 0.9;
-}
-
-.welcome-actions {
-  display: flex;
-  gap: 15px;
-}
-
-.stats-section {
-  margin-bottom: 20px;
-}
+.stats-section { margin-bottom: 20px; }
 
 .stat-card {
-  border: none;
-  transition: transform 0.3s;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
 }
 
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
+.stat-item { display: flex; align-items: center; gap: 15px; }
 .stat-icon {
   width: 50px;
   height: 50px;
-  border-radius: 10px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -539,45 +527,26 @@ onUnmounted(() => {
   color: white;
 }
 
-.stat-icon.novels {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+.stat-icon.novels { background: linear-gradient(135deg, #6b7280, #4b5563); }
+.stat-icon.words { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.stat-icon.chapters { background: linear-gradient(135deg, #6b7280, #374151); }
+.stat-icon.tokens { background: linear-gradient(135deg, #4b5563, #1f2937); }
+
+.stat-content { flex: 1; }
+.stat-number { font-size: 24px; font-weight: 700; color: #303133; line-height: 1; }
+.stat-label { font-size: 14px; color: #909399; margin-top: 5px; }
+
+.main-content { margin-bottom: 20px; }
+
+.goals-card,
+.quick-actions-card,
+.recent-novels-card {
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.08);
 }
 
-.stat-icon.words {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-}
-
-.stat-icon.chapters {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-}
-
-.stat-icon.tokens {
-  background: linear-gradient(135deg, #43e97b, #38f9d7);
-}
-
-.stat-content {
-  flex: 1;
-}
-
-.stat-number {
-  font-size: 24px;
-  font-weight: 600;
-  color: #303133;
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #909399;
-  margin-top: 5px;
-}
-
-.main-content {
-  margin-bottom: 20px;
-}
-
-/* 卡片高度对齐 */
-.goals-card, 
+.goals-card,
 .quick-actions-card {
   height: 100%;
   min-height: 380px;
@@ -596,6 +565,7 @@ onUnmounted(() => {
   flex-direction: column;
   justify-content: flex-start;
   min-height: 300px;
+  padding: 10px 0;
 }
 
 .quick-actions {
@@ -603,99 +573,47 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 10px 0;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 600;
-}
-
-.goals-content {
-  padding: 10px 0;
+  font-weight: 700;
 }
 
 .goal-item {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   padding: 15px;
-  background: #fafafa;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
+  background: linear-gradient(140deg, #fafafa 0%, #f3f4f6 100%);
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
 }
 
-.goal-item:last-child {
-  margin-bottom: 15px;
-}
-
-.goal-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.goal-label {
-  font-size: 14px;
-  color: #606266;
-}
-
-.goal-value {
-  font-size: 14px;
-  font-weight: 600;
-  color: #303133;
-}
-
-.goal-progress {
-  position: relative;
-}
-
-.progress-text {
-  display: block;
-  text-align: right;
-  font-size: 12px;
-  color: #909399;
-  margin-top: 5px;
-  line-height: 1;
-}
+.goal-item:last-child { margin-bottom: 8px; }
+.goal-info { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.goal-label { font-size: 14px; color: #606266; }
+.goal-value { font-size: 14px; font-weight: 600; color: #303133; }
+.goal-progress { position: relative; }
+.progress-text { display: block; text-align: right; font-size: 12px; color: #909399; margin-top: 5px; line-height: 1; }
 
 .streak-info {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  padding: 14px;
+  background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   margin-top: auto;
   margin-bottom: 0;
 }
 
-.streak-icon {
-  color: #f39c12;
-  font-size: 18px;
-}
-
-.no-goals {
-  padding: 20px;
-  text-align: center;
-}
-
-.view-all-goals {
-  text-align: center;
-  padding: 10px;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 15px;
-}
-
-.view-all-goals .el-button {
-  color: #409eff;
-  font-size: 12px;
-}
-
-.quick-actions {
-  padding: 10px 0;
-}
+.streak-icon { color: #f39c12; font-size: 18px; }
+.no-goals { padding: 20px; text-align: center; }
+.view-all-goals { text-align: center; padding: 10px; border-top: 1px solid #f0f0f0; margin-top: 10px; }
+.view-all-goals .el-button { color: #4b5563; font-size: 12px; }
 
 .action-grid {
   display: grid;
@@ -710,18 +628,19 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 25px 20px;
-  border: 1px solid #e4e7ed;
-  border-radius: 8px;
+  padding: 24px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
   min-height: 100px;
   justify-content: center;
+  background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);
 }
 
 .action-item:hover {
-  border-color: #409eff;
-  background-color: #f0f9ff;
+  border-color: #6b7280;
+  background: linear-gradient(140deg, #f3f4f6, #e5e7eb);
   transform: translateY(-2px);
 }
 
@@ -729,7 +648,7 @@ onUnmounted(() => {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background: #409eff;
+  background: linear-gradient(145deg, #4b5563, #1f2937);
   color: white;
   display: flex;
   align-items: center;
@@ -737,251 +656,167 @@ onUnmounted(() => {
   font-size: 20px;
 }
 
-.recent-novels-section {
-  margin-bottom: 20px;
-}
-
-.novels-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+.recent-novels-section { margin-bottom: 20px; }
+.novels-list { display: flex; flex-direction: column; gap: 12px; }
 
 .novel-item {
   display: flex;
   align-items: center;
   gap: 15px;
   padding: 15px;
-  border: 1px solid #e4e7ed;
-  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
+  background: linear-gradient(145deg, #ffffff 0%, #f9fbff 100%);
 }
 
 .novel-item:hover {
-  border-color: #409eff;
-  background-color: #f0f9ff;
+  border-color: #6b7280;
+  background: linear-gradient(140deg, #f3f4f6 0%, #e5e7eb 100%);
 }
 
-.novel-cover {
-  width: 60px;
-  height: 80px;
-  border-radius: 4px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
+.novel-cover { width: 60px; height: 80px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+.novel-cover img { width: 100%; height: 100%; object-fit: cover; }
+.default-cover { width: 100%; height: 100%; background: #f5f7fa; display: flex; align-items: center; justify-content: center; color: #c0c4cc; font-size: 24px; }
+.novel-info { flex: 1; min-width: 0; }
+.novel-title { margin: 0 0 5px 0; font-size: 16px; font-weight: 600; color: #303133; }
+.novel-desc { margin: 0 0 8px 0; font-size: 14px; color: #606266; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.novel-meta { display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px; color: #909399; }
+.novel-actions .el-button { padding: 0; }
+.novel-actions { flex-shrink: 0; }
+.empty-novels { padding: 40px 0; }
 
-.novel-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.default-cover {
-  width: 100%;
-  height: 100%;
-  background: #f5f7fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #c0c4cc;
-  font-size: 24px;
-}
-
-.novel-info {
-  flex: 1;
-}
-
-.novel-title {
-  margin: 0 0 5px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
-}
-
-.novel-desc {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: #606266;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.novel-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  font-size: 12px;
-  color: #909399;
-}
-
-.novel-actions .el-button {
-  padding: 0;
-}
-
-.novel-actions {
-  flex-shrink: 0;
-}
-
-.empty-novels {
-  padding: 40px 0;
-}
-
-/* 响应式设计 */
 @media (max-width: 1024px) {
-  .welcome-card :deep(.el-card__body) {
-    padding: 32px;
-  }
-
-  .welcome-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .welcome-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .stats-section .el-col {
-    margin-bottom: 16px;
-  }
-
+  .welcome-card :deep(.el-card__body) { padding: 32px; }
+  .welcome-content { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .welcome-actions { width: 100%; justify-content: flex-start; }
+  .stats-section .el-col { margin-bottom: 14px; }
   .goals-card,
-  .quick-actions-card {
-    min-height: auto;
-  }
-
-  .novels-list {
-    gap: 12px;
-  }
+  .quick-actions-card { min-height: auto; }
 }
 
 @media (max-width: 768px) {
-  .welcome-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-  
-  .goals-card, 
-  .quick-actions-card {
-    min-height: auto;
-  }
-  
-  .welcome-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
+  .main-content,
+  .stats-section { margin-bottom: 12px; }
+
+  .welcome-card {
+    border-radius: 16px;
+    box-shadow: 0 12px 26px rgba(17, 24, 39, 0.24);
   }
 
-  .action-grid {
-    grid-template-columns: 1fr;
+  .welcome-card :deep(.el-card__body) { padding: 24px 18px; }
+
+  .welcome-content { text-align: left; gap: 16px; }
+
+  .welcome-text h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
   }
+
+  .welcome-text p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .welcome-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .welcome-actions :deep(.el-button) {
+    width: 100%;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .stats-section :deep(.el-row) {
+    margin-left: -6px !important;
+    margin-right: -6px !important;
+  }
+
+  .stats-section :deep(.el-col) {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    margin-bottom: 12px;
+  }
+
+  .stat-card :deep(.el-card__body) { padding: 14px 12px; }
+  .stat-item { gap: 10px; }
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+  .stat-number { font-size: 18px; }
+  .stat-label { font-size: 12px; margin-top: 3px; }
+
+  .goals-card,
+  .quick-actions-card,
+  .recent-novels-card { border-radius: 14px; }
+
+  .goals-content { min-height: auto; }
+
+  .action-grid { grid-template-columns: 1fr; gap: 10px; }
 
   .action-item {
-    min-height: 76px;
+    min-height: 72px;
     flex-direction: row;
     justify-content: flex-start;
-    gap: 14px;
-    padding: 14px 16px;
+    gap: 12px;
+    padding: 12px 14px;
   }
 
   .action-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
     flex-shrink: 0;
   }
 
-  .action-item span {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
+  .action-item span { font-size: 14px; font-weight: 600; }
+
   .novel-item {
-    flex-direction: column;
     align-items: flex-start;
-    text-align: left;
-    gap: 12px;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
   }
 
-  .novel-cover {
-    width: 54px;
-    height: 72px;
-  }
-  
-  .goals-content {
-    min-height: auto;
-  }
+  .novel-title { font-size: 15px; }
+  .novel-desc { font-size: 13px; }
+  .novel-meta { gap: 10px; }
 
-  .novel-actions {
-    width: 100%;
-  }
-
+  .novel-actions { width: 100%; }
   .novel-actions .el-button {
     width: 100%;
     justify-content: center;
     padding: 8px 0;
     border: 1px solid #e4e7ed;
     border-radius: 8px;
+    margin-top: 4px;
   }
 }
 
 @media (max-width: 576px) {
-  .welcome-card :deep(.el-card__body) {
-    padding: 24px;
+  .welcome-section { margin-bottom: 12px; }
+  .recent-novels-section { margin-bottom: 8px; }
+
+  .home-page :deep(.el-card__header) {
+    padding: 12px 14px;
   }
 
-  .welcome-text h1 {
-    font-size: 24px;
+  .home-page :deep(.el-card__body) {
+    padding: 12px 14px;
   }
 
-  .welcome-actions {
-    flex-direction: column;
-    width: 100%;
-  }
+  .goal-item { padding: 12px; }
+  .goal-info { flex-direction: column; gap: 6px; }
+  .progress-text { text-align: left; line-height: 1.4; }
 
-  .welcome-actions .el-button {
-    width: 100%;
-  }
-
-  .stat-item {
-    gap: 10px;
-  }
-
-  .stat-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 18px;
-  }
-
-  .stat-number {
-    font-size: 20px;
-  }
-
-  .goal-item {
-    padding: 12px;
-  }
-
-  .novel-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .goal-info {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .progress-text {
-    text-align: left;
-    line-height: 1.4;
-  }
+  .novel-item { flex-direction: column; }
+  .novel-cover { width: 50px; height: 66px; }
+  .novel-meta { flex-direction: column; align-items: flex-start; gap: 4px; }
 }
 </style>
