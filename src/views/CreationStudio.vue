@@ -306,6 +306,7 @@ const refreshData = () => {
 const handleNovelChange = (novelId) => {
   selectedNovel.value = novels.value.find(item => item.id === novelId) || null
   chapterBoard.value = (selectedNovel.value?.chapterList || []).map((chapter, idx) => ({
+    ...chapter,
     id: chapter.id || uid('chapter'),
     title: chapter.title || `第${idx + 1}章`,
     status: chapter.status || 'draft',
