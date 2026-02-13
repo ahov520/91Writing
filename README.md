@@ -177,6 +177,18 @@ pnpm dev
 pnpm build
 ```
 
+### ▲ 一键部署到 Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ponysb/91Writing)
+
+```bash
+# 可选：先在本地验证构建
+npm install
+npm run build
+```
+
+> 本仓库已内置 `vercel.json`，导入 Vercel 后会自动使用 Vite 构建并发布 `dist` 目录。
+
 ### 首次使用
 1. **配置AI服务**: 点击右上角「API配置」，添加您的API密钥
 2. **创建项目**: 选择小说类型，输入基本信息
